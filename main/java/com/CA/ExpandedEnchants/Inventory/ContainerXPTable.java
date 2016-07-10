@@ -32,13 +32,12 @@ import com.CA.ExpandedEnchants.Enchants.EnchantmentEE;
 
 public class ContainerXPTable extends Container
 {
-    /** SlotEnchantmentTable object with ItemStack to be enchanted */
+   
     public IInventory tableInventory = new InventoryBasic("XP", true, 1)
     {
         private static final String __OBFID = "CL_00001746";
-        /**
-         * Returns the maximum stack size for a inventory slot.
-         */
+   
+        
         @Override
         public int getInventoryStackLimit()
         {
@@ -57,9 +56,9 @@ public class ContainerXPTable extends Container
     private int posY;
     private int posZ;
     private Random rand = new Random();
-    /** used as seed for EnchantmentNameParts (see GuiEnchantment) */
+
     public long nameSeed;
-    /** 3-member array storing the enchantment levels of each slot */
+
     public int[] enchantLevels = new int[3];
     private static final String __OBFID = "CL_00001745";
 
@@ -71,9 +70,7 @@ public class ContainerXPTable extends Container
         this.addSlotToContainer(new Slot(this.tableInventory, 0, 25, 47)
         {
             private static final String __OBFID = "CL_00001747";
-            /**
-             * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
-             */
+
             public boolean isItemValid(ItemStack par1ItemStack)
             {
                 return true;
@@ -123,9 +120,7 @@ public class ContainerXPTable extends Container
         }
     }
 
-    /**
-     * Callback for when the crafting matrix is changed.
-     */
+
     @Override
     public void onCraftMatrixChanged(IInventory par1IInventory)
     {
@@ -157,9 +152,7 @@ public class ContainerXPTable extends Container
         }
     }
 
-    /**
-     * enchants the item on the table using the specified slot; also deducts XP from player
-     */
+
     @Override
     public boolean enchantItem(EntityPlayer par1EntityPlayer, int par2)
     {
@@ -333,9 +326,7 @@ public class ContainerXPTable extends Container
         return hashmap;
     }
 
-    /**
-     * Called when the container is closed.
-     */
+
     @Override
     public void onContainerClosed(EntityPlayer par1EntityPlayer)
     {
@@ -357,9 +348,6 @@ public class ContainerXPTable extends Container
         return this.worldPointer.getBlockState(new BlockPos(this.posX, this.posY, this.posZ)).getBlock() != EEMain.xpTable ? false : par1EntityPlayer.getDistanceSq((double)this.posX + 0.5D, (double)this.posY + 0.5D, (double)this.posZ + 0.5D) <= 64.0D;
     }
 
-    /**
-     * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
-     */
     @Override
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
     {

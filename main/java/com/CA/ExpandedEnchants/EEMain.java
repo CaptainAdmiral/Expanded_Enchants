@@ -491,7 +491,5 @@ public class EEMain {
 
 		MinecraftForge.EVENT_BUS.register(new EEHooks());
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
-//		comProxy.RegisterEntityRenders();
-		//		comProxy.RegisterRenderHooks();
 	}
 }

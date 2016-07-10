@@ -72,6 +72,7 @@ public class ItemPotionEE extends ItemPotion {
 		this.setCreativeTab(CreativeTabs.tabBrewing);
 	}
 
+	/**Registers a potion effect for a metadata subtype*/
 	public static void registerPotion(Potion potion, int baseDuration, boolean hasExtendedDuration, boolean hasAmplifier) {
 		potionsList.add(new PotionData(potion, baseDuration, hasExtendedDuration, hasAmplifier));
 	}
