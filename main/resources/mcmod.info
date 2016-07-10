@@ -1,0 +1,16 @@
+[
+{
+  "modid": "expandedenchants",
+  "name": "Expanded Enchants",
+  "description": "Adds a variety of new enchants to the vanilla enchanting system",
+  "version": "1.0.1",
+  "mcversion": "1.8",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Captain_Admiral"],
+  "credits": "Captain_Admiral",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
