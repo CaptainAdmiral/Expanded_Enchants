@@ -42,6 +42,7 @@ enchantment.fireSpeed=Rapidfire
 enchantment.fireResist=Demonborn
 enchantment.heavyTip=Skykiller
 
+potion.noEffect=Esoteric Brew
 potion.fastFall=Heaviness
 potion.fastFall.postfix=Potion of Heaviness
 potion.sticky=Climbing
@@ -49,6 +50,7 @@ potion.sticky.postfix=Potion of Climbing
 
 itemGroup.EE=Expanded Enchants
 
+item.emptyPotionEE.name=Esoteric Brew
 item.goldenEye.name=Solomon's Pearl
 item.xpBook.name=Tome of Secrets
 item.xpBucket.name=Bucket of XP

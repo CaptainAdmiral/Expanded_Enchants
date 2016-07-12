@@ -21,6 +21,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipe;
@@ -91,7 +92,7 @@ import com.google.common.collect.Lists;
 @Mod(modid = EEMain.MODID, version = EEMain.VERSION)
 public class EEMain {
 	//	|| 
-	//What was I doing? crafting item (brewing event), buff icon (renderInventoryEffect - Class; Potion), dispensability, all the potion effects, funky brewing stand (maybe crafter from drops from like a funky green blaze boss).
+	//What was I doing? Sort out entityPotionEE particle effects, buff icon (renderInventoryEffect - Class; Potion), dispensability, all the potion effects, funky brewing stand (maybe crafter from drops from like a funky green blaze boss).
 	//TO FIX: Json block state files for textures now
 	//TO DO: Refined XP texture cycles through color hues, water walking
 	//book explaining mod
@@ -121,6 +122,8 @@ public class EEMain {
 	public static final Fluid xpFluid = new Fluid("xp", new ResourceLocation(EEMain.MODID, "blocks/xpFluid_still"), new ResourceLocation(EEMain.MODID, "blocks/xpFluid_flow")).setLuminosity(8).setViscosity(2000);
 
 	public static Item potion;
+	/**It's the only way I could make the fing json model files work >:( */
+	public static Item potionConvenience;
 	
 	public static Item xpBook;
 	public static Item xpBucket;
@@ -421,19 +424,27 @@ public class EEMain {
 		EntityRegistry.registerGlobalEntityID(EntityPotionEE.class, "potionEE", potEntityId);
 		EntityRegistry.registerModEntity(EntityPotionEE.class, "potionEE", potEntityId, this.instance, 50, 10, true);
 		
-		fastFall = new PotionEE(this.fastFallId, new ResourceLocation("fire_resistance"), false, 14981690).setPotionName("potion.fastFall");
-		ItemPotionEE.registerPotion(this.fastFall, 200, true, true);
-		BrewingRecipeRegistry.addRecipe(new ItemStack(Items.milk_bucket, 1, 0), new ItemStack(Blocks.obsidian), new ItemStack(this.potion, 1, ItemPotionEE.getMetadata(this.fastFall, 0)));
+		potion = new ItemPotionEE().setUnlocalizedName("potion");
+		GameRegistry.registerItem(potion, potion.getUnlocalizedName().substring(5));
+		potionConvenience = new Item().setUnlocalizedName("potion_splash");
+		GameRegistry.registerItem(potionConvenience, potionConvenience.getUnlocalizedName().substring(5));
 		
-		sticky = new PotionEE(this.stickyId, new ResourceLocation("fire_resistance"), false, 14981690).setPotionName("potion.sticky");
-		ItemPotionEE.registerPotion(this.sticky, 2400, true, false);
+		ItemPotionEE.registerPotion(null, 1200, true, true, 0x66CCFF);
+		BrewingRecipeRegistry.addRecipe(new ItemStack(Items.potionitem, 1, 0), new ItemStack(Items.blaze_rod), new ItemStack(this.potion, 1, 0)); //Actual ingredient to be decided
+		
+		fastFall = new PotionEE(this.fastFallId, new ResourceLocation("fire_resistance"), false, 0x202020).setPotionName("potion.fastFall");
+		ItemPotionEE.registerPotion(this.fastFall, 1200, true, false, 0x202020);
+		ItemPotionEE.addAllRecipesForIngredient(this.fastFall, new ItemStack(Items.iron_ingot));
+		
+		sticky = new PotionEE(this.stickyId, new ResourceLocation("fire_resistance"), false, 0x99CC00).setPotionName("potion.sticky");
+		ItemPotionEE.registerPotion(this.sticky, 2400, true, false, 0x99CC00);
+		ItemPotionEE.addAllRecipesForIngredient(this.sticky, new ItemStack(Items.slime_ball));
+		
+		ItemPotionEE.addAllStandardRecipies();
 		
 		TextureMap texturemap = Minecraft.getMinecraft().getTextureMapBlocks();
 
 		xpDamage = new DamageSource("xp").setDamageBypassesArmor().setMagicDamage();
-		
-		potion = new ItemPotionEE().setUnlocalizedName("potion");
-		GameRegistry.registerItem(potion, potion.getUnlocalizedName().substring(5));
 		
 		xpBook = new ItemXPBook().setUnlocalizedName("xpBook").setCreativeTab(this.tabEE);
 		goldenEye = new ItemXPFiller().setUnlocalizedName("goldenEye").setCreativeTab(this.tabEE);
@@ -472,22 +483,30 @@ public class EEMain {
 			renderItem.getItemModelMesher().register(Item.getItemFromBlock(this.xpBlock), 0, new ModelResourceLocation(this.MODID + ":" + "xpBlock", "inventory"));
 			renderItem.getItemModelMesher().register(Item.getItemFromBlock(this.xpTableBase), 0, new ModelResourceLocation(this.MODID + ":" + "xpTableBase", "inventory"));
 			renderItem.getItemModelMesher().register(Item.getItemFromBlock(this.xpTable), 0, new ModelResourceLocation(this.MODID + ":" + "xpTableBase", "inventory"));
-
-			renderItem.getItemModelMesher().register(this.potion, 0, new ModelResourceLocation(this.MODID + ":" + "potion", "inventory"));
+			
+			for(int i=0; i<ItemPotionEE.countVariants(); i++) {
+				if(ItemPotionEE.isSplash(i)) {
+					ModelLoader.setCustomModelResourceLocation(this.potion, i, new ModelResourceLocation(this.MODID + ":" + "potionSplash", "inventory"));
+					renderItem.getItemModelMesher().register(this.potion, i, new ModelResourceLocation(this.MODID + ":" + "potion_splash", "inventory"));
+				} else {
+					renderItem.getItemModelMesher().register(this.potion, i, new ModelResourceLocation(this.MODID + ":" + "potion", "inventory"));
+				}
+			}
+			//NEEDS TESTING
+			
+			
 			renderItem.getItemModelMesher().register(this.goldenEye, 0, new ModelResourceLocation(this.MODID + ":" + "goldenEye", "inventory"));
 			renderItem.getItemModelMesher().register(this.xpBook, 0, new ModelResourceLocation(this.MODID + ":" + "xpBook", "inventory"));
 			renderItem.getItemModelMesher().register(this.xpBucket, 0, new ModelResourceLocation(this.MODID + ":" + "xpBucket", "inventory"));
 		}
 
-		int arrowId = EntityRegistry.findGlobalUniqueEntityId();
-
-		ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 0, 5));
-		ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 0, 5));
-		ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 0, 5));
-		ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 0, 5));
-		ChestGenHooks.addItem(ChestGenHooks.PYRAMID_JUNGLE_CHEST, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 0, 5));
-		ChestGenHooks.addItem(ChestGenHooks.NETHER_FORTRESS, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 0, 7));
-		ChestGenHooks.addItem(ChestGenHooks.STRONGHOLD_LIBRARY, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 0, 7));
+		ChestGenHooks.addItem(ChestGenHooks.VILLAGE_BLACKSMITH, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 1, 5));
+		ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 1, 5));
+		ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 1, 5));
+		ChestGenHooks.addItem(ChestGenHooks.PYRAMID_DESERT_CHEST, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 1, 5));
+		ChestGenHooks.addItem(ChestGenHooks.PYRAMID_JUNGLE_CHEST, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 1, 5));
+		ChestGenHooks.addItem(ChestGenHooks.NETHER_FORTRESS, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 1, 7));
+		ChestGenHooks.addItem(ChestGenHooks.STRONGHOLD_LIBRARY, new WeightedRandomChestContent(new ItemStack(this.xpBook), 0, 1, 7));
 
 		MinecraftForge.EVENT_BUS.register(new EEHooks());
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());

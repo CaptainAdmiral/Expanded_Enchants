@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import com.CA.ExpandedEnchants.Item.ItemPotionEE;
+
 import net.minecraft.block.BlockGravel;
 import net.minecraft.block.BlockNetherrack;
 import net.minecraft.block.BlockOre;
@@ -41,6 +43,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.event.brewing.PotionBrewEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -498,7 +501,7 @@ public class EEHooks {
 
 		//POTIONS
 
-		if(e.entityLiving.isPotionActive(EEMain.fastFall)) e.entityLiving.motionY -= (1 + e.entityLiving.getActivePotionEffect(EEMain.fastFall).getAmplifier())*0.06D;
+		if(e.entityLiving.isPotionActive(EEMain.fastFall) && !(e.entityLiving instanceof EntityPlayer && ((EntityPlayer)e.entityLiving).capabilities.isFlying)) e.entityLiving.motionY -= (0.2D + e.entityLiving.getActivePotionEffect(EEMain.fastFall).getAmplifier())*0.2D;
 		if(e.entityLiving.isPotionActive(EEMain.sticky)) {
 			e.entityLiving.fallDistance = 0;
 			if(e.entityLiving.isCollidedHorizontally) e.entityLiving.motionY = 0.3D;
